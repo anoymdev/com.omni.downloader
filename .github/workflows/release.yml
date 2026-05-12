@@ -1,0 +1,55 @@
+name: Build and Release APK
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags starting with v, e.g. v1.0.0
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Restore Firebase Configuration
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
+          echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode > lib/firebase_options.dart
+
+      - name: Build APK Release
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.vfs.watch=false"
+        run: flutter build apk --release
+
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk OmniDownloader.apk
+
+      - name: Release APK
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ github.ref_name }} OmniDownloader.apk \
+            --title "Release ${{ github.ref_name }}" \
+            --notes "Automated release from Omni Downloader." || \
+          gh release upload ${{ github.ref_name }} OmniDownloader.apk \
+            --clobber
