@@ -17,8 +17,21 @@ Built with Flutter + yt-dlp + FFmpeg
 
 ---
 
+## ⚠️ Disclaimer
+
+Omni Downloader is intended **exclusively** for:
+- Downloading your own content
+- Backing up your uploaded videos
+- Downloading Creative Commons / Public Domain content
+- Personal & offline use
+
+It is strictly prohibited to use this app to redistribute, commercialize, or download content you do not own without the copyright owner's permission. The user takes full responsibility for the use of this app.
+
+---
+
 ## 📋 Table of Contents
 
+- [Disclaimer](#-disclaimer)
 - [About](#about)
 - [Features](#features)
 - [Requirements](#requirements)
@@ -49,6 +62,7 @@ Unlike platform-specific solutions, Omni Downloader uses a unified backend (yt-d
 - 📊 **Real-time Progress**: Live download speed, progress percentage, and phase tracking
 - 🎬 **Video + Audio Merging**: Download best quality video & audio separately, then merge with FFmpeg
 - 🔔 **Download Notifications**: Foreground notification for active downloads and progress status
+- 🌍 **Bilingual Support**: Fully localized in English and Indonesian with a built-in language switcher
 - 📱 **Material Design 3**: Modern, intuitive dark-themed UI
 - 🛡️ **Robust Error Handling**: Firebase Crashlytics for automatic error tracking
 - 📈 **Usage Analytics**: Firebase Analytics integration
@@ -76,6 +90,7 @@ Unlike platform-specific solutions, Omni Downloader uses a unified backend (yt-d
 - ✅ **Custom Save Location** - Choose where to save downloaded files
 - ✅ **Download Management** - Track multiple downloads with real-time stats
 - ✅ **FFmpeg Processing** - Professional-grade video/audio post-processing
+- ✅ **Language Switcher** - Seamlessly switch between English and Indonesian UI
 
 ### Technical Features
 - 🔐 **Permission Management** - Handles storage and notification permissions
@@ -324,6 +339,10 @@ omni-downloader/
 │   ├── app.dart                           # Root Material App widget
 │   ├── firebase_options.dart              # Firebase configuration
 │   │
+│   ├── l10n/                              # Localization files
+│   │   ├── app_en.arb                     # English strings
+│   │   └── app_id.arb                     # Indonesian strings
+│   │
 │   ├── models/
 │   │   ├── video_metadata.dart            # Video info model (universal)
 │   │   └── download_option.dart           # Download format/quality model
@@ -360,7 +379,10 @@ omni-downloader/
 │   ├── build.gradle.kts
 │   └── settings.gradle.kts
 │
+├── .github/                               # GitHub Actions workflows
 ├── pubspec.yaml                           # Flutter dependencies
+├── l10n.yaml                              # Localization configuration
+├── remote_config_defaults.json            # Firebase Remote Config defaults
 ├── analysis_options.yaml                  # Linter rules
 ├── firebase.json                          # Firebase CLI config
 ├── README.md                              # This file
@@ -396,6 +418,7 @@ omni-downloader/
 |-------|-----------|---------|
 | **UI Framework** | Flutter 3.10+ with Material Design 3 | Cross-platform mobile UI |
 | **State Management** | StatefulWidget | UI state management |
+| **Localization** | flutter_localizations, intl, ARB | Multi-language support (English/Indonesian) |
 | **Local Storage** | shared_preferences, path_provider | User preferences & file paths |
 | **Video Processing** | FFmpeg Kit Flutter (4.1.0) | Video/audio merging & conversion |
 | **Backend** | Firebase | Crashlytics, Analytics, Remote Config |
