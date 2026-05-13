@@ -44,12 +44,35 @@ jobs:
       - name: Rename APK
         run: mv build/app/outputs/flutter-apk/app-release.apk OmniDownloader.apk
 
+      - name: VirusTotal Scan (Large File)
+        id: vt
+        env:
+          VT_API_KEY: ${{ secrets.VT_API_KEY }}
+        run: |
+          # 1. Request special upload URL for files >32MB
+          UPLOAD_URL=$(curl -s --request GET \
+            --url https://www.virustotal.com/api/v3/files/upload_url \
+            --header "x-apikey: $VT_API_KEY" | jq -r '.data')
+            
+          # 2. Upload the APK to the obtained URL
+          echo "Uploading APK to VirusTotal..."
+          curl -s --request POST \
+            --url "$UPLOAD_URL" \
+            --header "x-apikey: $VT_API_KEY" \
+            --form "file=@OmniDownloader.apk" > /dev/null
+            
+          # 3. Calculate SHA256 hash for the report link
+          FILE_HASH=$(sha256sum OmniDownloader.apk | awk '{print $1}')
+          echo "url=https://www.virustotal.com/gui/file/$FILE_HASH" >> $GITHUB_OUTPUT
+
       - name: Release APK
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create ${{ github.ref_name }} OmniDownloader.apk \
             --title "Release ${{ github.ref_name }}" \
-            --notes "Automated release from Omni Downloader." || \
+            --notes "Automated release from Omni Downloader.
+            
+            🛡️ **VirusTotal Scan:** [View Results](${{ steps.vt.outputs.url }})" || \
           gh release upload ${{ github.ref_name }} OmniDownloader.apk \
             --clobber
