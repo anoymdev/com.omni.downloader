@@ -49,5 +49,14 @@
   "language": "Language",
   "systemDefault": "System Default",
   "english": "English",
-  "indonesian": "Indonesian"
+  "indonesian": "Indonesian",
+  "disclaimerTitle": "Terms of Service",
+  "disclaimerIntro": "Omni Downloader is intended exclusively for:",
+  "disclaimerPoint1": "Downloading your own content",
+  "disclaimerPoint2": "Backing up your uploaded videos",
+  "disclaimerPoint3": "Creative Commons / Public Domain content",
+  "disclaimerPoint4": "Personal & offline use",
+  "disclaimerWarning": "It is strictly prohibited to use this app to redistribute, commercialize, or download content you do not own without the copyright owner's permission.",
+  "disclaimerResponsibility": "The user takes full responsibility for the use of this app.",
+  "disclaimerAccept": "I Understand & Agree"
 }

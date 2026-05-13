@@ -170,4 +170,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get indonesian => 'Indonesian';
+
+  @override
+  String get disclaimerTitle => 'Terms of Service';
+
+  @override
+  String get disclaimerIntro => 'Omni Downloader is intended exclusively for:';
+
+  @override
+  String get disclaimerPoint1 => 'Downloading your own content';
+
+  @override
+  String get disclaimerPoint2 => 'Backing up your uploaded videos';
+
+  @override
+  String get disclaimerPoint3 => 'Creative Commons / Public Domain content';
+
+  @override
+  String get disclaimerPoint4 => 'Personal & offline use';
+
+  @override
+  String get disclaimerWarning =>
+      'It is strictly prohibited to use this app to redistribute, commercialize, or download content you do not own without the copyright owner\'s permission.';
+
+  @override
+  String get disclaimerResponsibility =>
+      'The user takes full responsibility for the use of this app.';
+
+  @override
+  String get disclaimerAccept => 'I Understand & Agree';
 }

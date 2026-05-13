@@ -91,8 +91,11 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       } catch (_) {}
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkUpdate();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _checkDisclaimer();
+      if (mounted) {
+        _checkUpdate();
+      }
     });
   }
 
@@ -206,6 +209,113 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         });
       }
     } catch (_) {}
+  }
+
+  Future<void> _checkDisclaimer() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasAccepted = prefs.getBool('hasAcceptedDisclaimer') ?? false;
+
+    if (hasAccepted || !mounted) return;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(16),
+            insetPadding: EdgeInsets.all(20),
+            backgroundColor: const Color(0xFF1A1A1A),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            title: Row(
+              children: [
+                const Icon(Icons.warning_amber_rounded, color: Colors.amber, size: 24),
+                const SizedBox(width: 10),
+                Text(AppLocalizations.of(context)!.disclaimerTitle, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(AppLocalizations.of(context)!.disclaimerIntro, style: const TextStyle(fontSize: 14)),
+                  const SizedBox(height: 12),
+                  _buildDisclaimerBullet(Icons.person_rounded, AppLocalizations.of(context)!.disclaimerPoint1),
+                  _buildDisclaimerBullet(Icons.cloud_upload_rounded, AppLocalizations.of(context)!.disclaimerPoint2),
+                  _buildDisclaimerBullet(Icons.public_rounded, AppLocalizations.of(context)!.disclaimerPoint3),
+                  _buildDisclaimerBullet(Icons.offline_pin_rounded, AppLocalizations.of(context)!.disclaimerPoint4),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withAlpha(25),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.redAccent.withAlpha(76)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.disclaimerWarning,
+                            style: const TextStyle(fontSize: 13, color: Colors.white70, height: 1.4),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    AppLocalizations.of(context)!.disclaimerResponsibility,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                onPressed: () async {
+                  await prefs.setBool('hasAcceptedDisclaimer', true);
+                  if (ctx.mounted) {
+                    Navigator.of(ctx).pop();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7C4DFF),
+                  foregroundColor: Colors.white,
+                ),
+                child: Text(AppLocalizations.of(context)!.disclaimerAccept),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDisclaimerBullet(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: const Color(0xFF00BCD4)),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 13, color: Colors.white70, height: 1.3),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _checkUpdate() async {

@@ -49,5 +49,14 @@
   "language": "Bahasa",
   "systemDefault": "Sistem (Default)",
   "english": "Inggris",
-  "indonesian": "Indonesia"
+  "indonesian": "Indonesia",
+  "disclaimerTitle": "Perhatian",
+  "disclaimerIntro": "Omni Downloader ditujukan untuk:",
+  "disclaimerPoint1": "Men-download konten milik kamu sendiri",
+  "disclaimerPoint2": "Backup video yang kamu upload",
+  "disclaimerPoint3": "Konten berlisensi Creative Commons / Public Domain",
+  "disclaimerPoint4": "Penggunaan pribadi & offline",
+  "disclaimerWarning": "Dilarang keras menggunakan app ini untuk mendistribusikan ulang, mengkomersilkan, atau mengunduh konten yang bukan milikmu tanpa izin pemilik hak cipta.",
+  "disclaimerResponsibility": "Pengguna bertanggung jawab penuh atas penggunaan app ini.",
+  "disclaimerAccept": "Saya Mengerti & Setuju"
 }

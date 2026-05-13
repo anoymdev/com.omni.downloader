@@ -397,6 +397,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Indonesian'**
   String get indonesian;
+
+  /// No description provided for @disclaimerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get disclaimerTitle;
+
+  /// No description provided for @disclaimerIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Omni Downloader is intended exclusively for:'**
+  String get disclaimerIntro;
+
+  /// No description provided for @disclaimerPoint1.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading your own content'**
+  String get disclaimerPoint1;
+
+  /// No description provided for @disclaimerPoint2.
+  ///
+  /// In en, this message translates to:
+  /// **'Backing up your uploaded videos'**
+  String get disclaimerPoint2;
+
+  /// No description provided for @disclaimerPoint3.
+  ///
+  /// In en, this message translates to:
+  /// **'Creative Commons / Public Domain content'**
+  String get disclaimerPoint3;
+
+  /// No description provided for @disclaimerPoint4.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal & offline use'**
+  String get disclaimerPoint4;
+
+  /// No description provided for @disclaimerWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'It is strictly prohibited to use this app to redistribute, commercialize, or download content you do not own without the copyright owner\'s permission.'**
+  String get disclaimerWarning;
+
+  /// No description provided for @disclaimerResponsibility.
+  ///
+  /// In en, this message translates to:
+  /// **'The user takes full responsibility for the use of this app.'**
+  String get disclaimerResponsibility;
+
+  /// No description provided for @disclaimerAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'I Understand & Agree'**
+  String get disclaimerAccept;
 }
 
 class _AppLocalizationsDelegate
