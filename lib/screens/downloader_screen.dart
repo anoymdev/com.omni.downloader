@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:omni_downloader/l10n/app_localizations.dart';
+import '../app.dart';
 import '../models/video_metadata.dart';
 
 import '../models/download_option.dart';
@@ -145,7 +147,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       setState(() {
         switch (status) {
           case 'fetching':
-            _currentPhase = 'Preparing...';
+            _currentPhase = AppLocalizations.of(context)!.preparing;
             break;
           case 'downloading':
             _isDownloading = true;
@@ -157,7 +159,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             _isStalled = map['stalled'] == true;
             break;
           case 'merging':
-            _currentPhase = map['phase'] as String? ?? 'Merging...';
+            _currentPhase = map['phase'] as String? ?? AppLocalizations.of(context)!.merging;
             _progress = 0.0;
             _totalBytes = 0;
             break;
@@ -170,7 +172,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               _showStatusDialog(
                 isSuccess: true,
-                message: map['message'] as String? ?? 'Download succeeded!',
+                message: map['message'] as String? ?? AppLocalizations.of(context)!.downloadSucceeded,
               );
             });
             break;
@@ -225,22 +227,22 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             }
           },
           child: AlertDialog(
-            title: const Text('Update Available'),
+            title: Text(AppLocalizations.of(context)!.updateAvailable),
             content: Text(
               isForceUpdate
-                  ? 'Your app version is outdated. Please update to continue using the app.'
-                  : 'A new app version is available. Would you like to update now?',
+                  ? AppLocalizations.of(context)!.updateOutdated
+                  : AppLocalizations.of(context)!.updateNewVersion,
             ),
             actions: [
               if (!isForceUpdate)
                 TextButton(
                   onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('Later'),
+                  child: Text(AppLocalizations.of(context)!.updateLater),
                 ),
               if (isForceUpdate)
                 TextButton(
                   onPressed: () => SystemNavigator.pop(),
-                  child: const Text('Exit'),
+                  child: Text(AppLocalizations.of(context)!.updateExit),
                 ),
               ElevatedButton(
                 onPressed: () async {
@@ -260,7 +262,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                     Navigator.of(ctx).pop();
                   }
                 },
-                child: const Text('Update'),
+                child: Text(AppLocalizations.of(context)!.updateButton),
               ),
             ],
           ),
@@ -276,7 +278,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
   Future<void> _fetchStreams() async {
     final url = _urlController.text.trim();
     if (url.isEmpty) {
-      _showSnackBar('Please enter a video URL first.');
+      _showSnackBar(AppLocalizations.of(context)!.pleaseEnterUrl);
       return;
     }
 
@@ -332,7 +334,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       _downloadedBytes = 0;
       _totalBytes = 0;
       _downloadSpeed = 0.0;
-      _currentPhase = 'Preparing...';
+      _currentPhase = AppLocalizations.of(context)!.preparing;
       _isStalled = false;
 
     });
@@ -343,8 +345,8 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     try {
       await FlutterForegroundTask.startService(
         serviceId: 256,
-        notificationTitle: 'Omni Downloader',
-        notificationText: 'Starting download...',
+        notificationTitle: AppLocalizations.of(context)!.appTitle,
+        notificationText: AppLocalizations.of(context)!.downloadStarting,
         callback: startCallback,
       );
     } catch (_) {}
@@ -384,9 +386,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         String? audioFile;
         try {
           if (!mounted) return;
-          setState(() => _currentPhase = 'Downloading Video (1/2)...');
+          setState(() => _currentPhase = AppLocalizations.of(context)!.downloadingVideo);
           _updateNotification(
-              'Omni Downloader', 'Downloading Video (1/2)...');
+              AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.downloadingVideo);
 
           videoFile = await YtDlpService.downloadStream(
             videoUrl: videoUrl,
@@ -397,14 +399,14 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
           if (!mounted) return;
           setState(() {
-            _currentPhase = 'Downloading Audio (2/2)...';
+            _currentPhase = AppLocalizations.of(context)!.downloadingAudio;
             _downloadedBytes = 0;
             _totalBytes = 0;
             _downloadSpeed = 0.0;
             _progress = 0.0;
           });
           _updateNotification(
-              'Omni Downloader', 'Downloading Audio (2/2)...');
+              AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.downloadingAudio);
 
           audioFile = await YtDlpService.downloadStream(
             videoUrl: videoUrl,
@@ -415,13 +417,13 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
           if (!mounted) return;
           setState(() {
-            _currentPhase = 'Merging Video & Audio...';
+            _currentPhase = AppLocalizations.of(context)!.mergingVideoAudio;
             _progress = 0.0;
             _totalBytes = 0;
             _downloadSpeed = 0.0;
           });
           _updateNotification(
-              'Omni Downloader', 'Merging Video & Audio...');
+              AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.mergingVideoAudio);
 
           final session = await FFmpegKit.executeWithArguments([
             '-y',
@@ -446,8 +448,8 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             '${saveDir.path}/$cleanTitle-${opt.tag}.%(ext)s';
 
         if (!mounted) return;
-        setState(() => _currentPhase = 'Downloading...');
-        _updateNotification('Omni Downloader', 'Downloading...');
+        setState(() => _currentPhase = AppLocalizations.of(context)!.downloading);
+        _updateNotification(AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.downloading);
 
         final finalFile = await YtDlpService.downloadStream(
           videoUrl: videoUrl,
@@ -466,7 +468,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         _isStalled = false;
 
       });
-      _updateNotification('Download Cancelled', '');
+      _updateNotification(AppLocalizations.of(context)!.downloadCancelled, '');
       _scheduleServiceStop();
     } catch (e) {
       AnalyticsService.logDownloadFailed(errorReason: e.toString());
@@ -477,7 +479,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         _isStalled = false;
 
       });
-      _updateNotification('Download Failed', _friendlyError(e.toString()));
+      _updateNotification(AppLocalizations.of(context)!.downloadFailed, _friendlyError(e.toString()));
       _scheduleServiceStop();
       _showStatusDialog(
         isSuccess: false,
@@ -524,9 +526,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     });
     _showStatusDialog(
       isSuccess: true,
-      message: 'Download succeeded!\n\nSaved to:\n$filePath',
+      message: '${AppLocalizations.of(context)!.downloadSucceeded}\n\nSaved to:\n$filePath',
     );
-    _updateNotification('Download completed ✓', title);
+    _updateNotification(AppLocalizations.of(context)!.downloadCompleted, title);
     _scheduleServiceStop();
   }
 
@@ -570,13 +572,14 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     if (Platform.isAndroid) {
       final status = await Permission.manageExternalStorage.request();
       if (!status.isGranted) {
-        _showSnackBar('Storage permission is required to select a folder.');
+        if (!mounted) return;
+        _showSnackBar(AppLocalizations.of(context)!.storagePermission);
         return;
       }
     }
 
     final selectedDir = await FilePicker.platform.getDirectoryPath(
-      dialogTitle: 'Choose Save Location',
+      dialogTitle: AppLocalizations.of(context)!.chooseSaveLocation,
       initialDirectory: _saveDirectory,
     );
 
@@ -590,13 +593,16 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       await probe.writeAsString('ok', flush: true);
       await probe.delete();
     } catch (_) {
-      _showSnackBar('Folder is not writable. Please choose another location.');
+      if (!mounted) return;
+      _showSnackBar(AppLocalizations.of(context)!.folderNotWritable);
       return;
     }
 
+    if (!mounted) return;
     setState(() => _saveDirectory = selectedDir);
     await _persistSaveDirectory(selectedDir);
-    _showSnackBar('Save location updated.');
+    if (!mounted) return;
+    _showSnackBar(AppLocalizations.of(context)!.saveLocationUpdated);
   }
 
   // -------------------------------------------------------------------------
@@ -689,7 +695,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
               Icon(icon, color: color, size: 52),
               const SizedBox(height: 16),
               Text(
-                isSuccess ? 'Success!' : 'Failed',
+                isSuccess ? AppLocalizations.of(context)!.success : AppLocalizations.of(context)!.failed,
                 style: TextStyle(
                   color: color,
                   fontWeight: FontWeight.bold,
@@ -723,9 +729,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text(
-                  'OK',
-                  style: TextStyle(fontWeight: FontWeight.w600),
+                child: Text(
+                  AppLocalizations.of(context)!.ok,
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -740,35 +746,35 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     final lower = raw.toLowerCase();
 
     if (lower.contains('timed out') || lower.contains('timeout')) {
-      return 'Connection lost or too slow.\nCheck your internet connection and try again.';
+      return AppLocalizations.of(context)!.connectionLost;
     }
     if (lower.contains('no internet') ||
         lower.contains('socketexception') ||
         lower.contains('network is unreachable') ||
         lower.contains('failed host lookup')) {
-      return 'No internet connection.\nCheck your WiFi or mobile data.';
+      return AppLocalizations.of(context)!.noInternet;
     }
     if (lower.contains('ssl') || lower.contains('handshake')) {
-      return 'Failed to establish a secure connection (SSL).\nCheck your network or try again later.';
+      return AppLocalizations.of(context)!.sslError;
     }
     if (lower.contains('unsupported url') ||
         lower.contains('no video formats') ||
         lower.contains('is not a valid url')) {
-      return 'The URL is unsupported or invalid.\nMake sure your video link is correct.';
+      return AppLocalizations.of(context)!.unsupportedUrl;
     }
     if (lower.contains('private video') ||
         lower.contains('login required') ||
         lower.contains('sign in')) {
-      return 'This video is private or requires login.\nIt cannot be downloaded.';
+      return AppLocalizations.of(context)!.privateVideo;
     }
     if (lower.contains('copyright') || lower.contains('blocked')) {
-      return 'This video is blocked due to copyright.\nIt cannot be downloaded.';
+      return AppLocalizations.of(context)!.copyrightBlocked;
     }
     if (lower.contains('age') && lower.contains('restrict')) {
-      return 'This video is age-restricted and requires login.\nIt cannot be downloaded.';
+      return AppLocalizations.of(context)!.ageRestricted;
     }
     if (lower.contains('ffmpeg')) {
-      return 'Failed to merge video and audio.\nTry a different format.';
+      return AppLocalizations.of(context)!.mergeFailed;
     }
 
     // Strip common prefixes for a cleaner display
@@ -787,7 +793,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     final uri = Uri.parse(urlString);
     final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && mounted) {
-      _showSnackBar('Unable to open the link.');
+      _showSnackBar(AppLocalizations.of(context)!.unableToOpenLink);
     }
   }
 
@@ -804,13 +810,13 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
           titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
           contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
           title: Row(
-            children: const [
-              Icon(Icons.info_outline_rounded,
+            children: [
+              const Icon(Icons.info_outline_rounded,
                   color: Color(0xFF7C4DFF), size: 22),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Text(
-                'Developer Info',
-                style: TextStyle(
+                AppLocalizations.of(context)!.donateTitle,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 17,
@@ -822,10 +828,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Thank you for using Omni Downloader!\n\n'
-                'If you have issues or suggestions, contact the developer:',
-                style: TextStyle(color: Colors.white70, fontSize: 13),
+              Text(
+                AppLocalizations.of(context)!.donateDesc,
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               const SizedBox(height: 12),
               Row(
@@ -858,9 +863,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Or support the app development:',
-                style: TextStyle(color: Colors.white70, fontSize: 13),
+              Text(
+                AppLocalizations.of(context)!.donateTitle,
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               const SizedBox(height: 8),
               Container(
@@ -900,13 +905,63 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             ElevatedButton.icon(
               onPressed: () => _openLink(_donateUrl),
               icon: const Icon(Icons.open_in_new, size: 16),
-              label: const Text('Open Saweria'),
+              label: Text(AppLocalizations.of(context)!.donateButton),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF7C4DFF),
                 foregroundColor: Colors.white,
               ),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showLanguageDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1A1A1A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          title: Text(AppLocalizations.of(context)!.language),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.systemDefault),
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('languageCode');
+                  if (!ctx.mounted) return;
+                  MyApp.setLocale(ctx, null);
+                  Navigator.of(ctx).pop();
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.english),
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('languageCode', 'en');
+                  if (!ctx.mounted) return;
+                  MyApp.setLocale(ctx, const Locale('en'));
+                  Navigator.of(ctx).pop();
+                },
+              ),
+              ListTile(
+                title: Text(AppLocalizations.of(context)!.indonesian),
+                onTap: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('languageCode', 'id');
+                  if (!ctx.mounted) return;
+                  MyApp.setLocale(ctx, const Locale('id'));
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -927,6 +982,14 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             pinned: true,
             actions: [
               IconButton(
+                tooltip: AppLocalizations.of(context)!.language,
+                icon: const Icon(
+                  Icons.language_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: _showLanguageDialog,
+              ),
+              IconButton(
                 tooltip: 'Developer Info',
                 icon: const Icon(
                   Icons.info_outline_rounded,
@@ -938,14 +1001,14 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             flexibleSpace: FlexibleSpaceBar(
               titlePadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              title: const Row(
+              title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.cloud_download_rounded, color: Colors.white, size: 20),
-                  SizedBox(width: 8),
+                  const Icon(Icons.cloud_download_rounded, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
                   Text(
-                    'Omni Downloader',
-                    style: TextStyle(
+                    AppLocalizations.of(context)!.appTitle,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                       color: Colors.white,

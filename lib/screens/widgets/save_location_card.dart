@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omni_downloader/l10n/app_localizations.dart';
 
 /// Displays the currently selected save directory with a button to change it.
 class SaveLocationCard extends StatelessWidget {
@@ -46,9 +47,9 @@ class SaveLocationCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'SAVE LOCATION',
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(context)!.saveLocation,
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
@@ -93,7 +94,7 @@ class SaveLocationCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Change',
+                      AppLocalizations.of(context)!.changeLocation,
                       style: TextStyle(
                         color: enabled ? Colors.white70 : Colors.white24,
                         fontSize: 12,

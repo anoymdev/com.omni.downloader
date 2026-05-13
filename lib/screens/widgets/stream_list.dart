@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omni_downloader/l10n/app_localizations.dart';
 
 import '../../models/download_option.dart';
 
@@ -26,9 +27,9 @@ class StreamList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
-          'SELECT QUALITY',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.selectQuality,
+          style: const TextStyle(
             color: Colors.grey,
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -59,7 +60,7 @@ class StreamList extends StatelessWidget {
                       )
                     : const Icon(Icons.download_rounded, size: 18),
                 label: Text(
-                  isDownloading ? 'Downloading...' : 'Download',
+                  isDownloading ? AppLocalizations.of(context)!.downloading : AppLocalizations.of(context)!.download,
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 style: ElevatedButton.styleFrom(

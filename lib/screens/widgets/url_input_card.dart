@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:omni_downloader/l10n/app_localizations.dart';
 
 /// URL input field and search button card.
 class UrlInputCard extends StatelessWidget {
@@ -33,9 +34,9 @@ class UrlInputCard extends StatelessWidget {
             enabled: enabled,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              labelText: 'Video URL',
+              labelText: AppLocalizations.of(context)!.videoUrlLabel,
               labelStyle: TextStyle(color: colors.primary, fontSize: 14),
-              hintText: 'Paste a video link from any platform...',
+              hintText: AppLocalizations.of(context)!.videoUrlHint,
               hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
               prefixIcon: Icon(Icons.link, color: colors.primary, size: 20),
               enabledBorder: OutlineInputBorder(
@@ -67,7 +68,7 @@ class UrlInputCard extends StatelessWidget {
                   )
                 : const Icon(Icons.search, size: 18),
             label: Text(
-              isLoading ? 'Fetching Data...' : 'Fetch Info',
+              isLoading ? AppLocalizations.of(context)!.fetchingData : AppLocalizations.of(context)!.fetchInfo,
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             style: ElevatedButton.styleFrom(
