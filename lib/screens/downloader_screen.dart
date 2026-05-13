@@ -1114,7 +1114,10 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.cloud_download_rounded, color: Colors.white, size: 20),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset('assets/images/app_icon.png', width: 24, height: 24),
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     AppLocalizations.of(context)!.appTitle,
