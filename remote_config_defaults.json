@@ -1,0 +1,32 @@
+{
+  "parameters": {
+    "appName": {
+      "defaultValue": {
+        "value": "Omni Downloader"
+      },
+      "valueType": "STRING",
+      "description": "The name of the application"
+    },
+    "maxVersion": {
+      "defaultValue": {
+        "value": "1"
+      },
+      "valueType": "NUMBER",
+      "description": "The maximum supported version code"
+    },
+    "minVersion": {
+      "defaultValue": {
+        "value": "1"
+      },
+      "valueType": "NUMBER",
+      "description": "The minimum required version code"
+    },
+    "updateUrl": {
+      "defaultValue": {
+        "value": "https://github.com/anoymdev/com.omni.downloader/releases/latest"
+      },
+      "valueType": "STRING",
+      "description": "The URL to redirect the user to when an update is required"
+    }
+  }
+}
