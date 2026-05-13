@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:omni_downloader/l10n/app_localizations.dart';
 import '../../models/download_option.dart';
 
-/// Displays the list of available stream options as selectable tiles.
 class StreamList extends StatelessWidget {
   final List<DownloadOption> options;
   final DownloadOption? selected;
@@ -24,71 +23,73 @@ class StreamList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'SELECT QUALITY',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.selectQuality,
+          style: const TextStyle(
             color: Colors.grey,
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.2,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         ...options.map((opt) => _StreamTile(
               option: opt,
               isSelected: selected == opt,
               isDownloading: isDownloading,
               onTap: () => onSelect(opt),
             )),
-        const SizedBox(height: 14),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
-              child: ElevatedButton.icon(
-                onPressed: (isDownloading || selected == null)
-                    ? null
-                    : onDownload,
-                icon: isDownloading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white),
-                      )
-                    : const Icon(Icons.download_rounded, size: 18),
-                label: Text(
-                  isDownloading ? 'Downloading...' : 'Download',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7C4DFF),
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor: Colors.white10,
-                  disabledForegroundColor: Colors.white30,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  elevation: 0,
+              child: SizedBox(
+                height: 54,
+                child: ElevatedButton.icon(
+                  onPressed: (isDownloading || selected == null)
+                      ? null
+                      : onDownload,
+                  icon: isDownloading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2.5, color: Colors.white),
+                        )
+                      : const Icon(Icons.download_rounded, size: 20),
+                  label: Text(
+                    isDownloading ? AppLocalizations.of(context)!.downloading : AppLocalizations.of(context)!.download,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF7C4DFF),
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: const Color(0xFF7C4DFF).withValues(alpha: 0.3),
+                    disabledForegroundColor: Colors.white.withValues(alpha: 0.5),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: isDownloading || selected == null ? 0 : 4,
+                  ),
                 ),
               ),
             ),
             if (isDownloading) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 12),
               SizedBox(
-                height: 48,
+                height: 54,
+                width: 54,
                 child: ElevatedButton(
                   onPressed: onCancel,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white10,
+                    backgroundColor: Colors.redAccent.withValues(alpha: 0.15),
                     foregroundColor: Colors.redAccent,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.zero,
                   ),
-                  child: const Icon(Icons.close, size: 20),
+                  child: const Icon(Icons.close_rounded, size: 24),
                 ),
               ),
             ],
@@ -121,45 +122,52 @@ class _StreamTile extends StatelessWidget {
     return GestureDetector(
       onTap: isDownloading ? null : onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 160),
-        margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? colors.primary.withValues(alpha: 0.12)
-              : const Color(0xFF1C1C1C),
+              ? colors.primary.withValues(alpha: 0.1)
+              : const Color(0xFF18181B),
           border: Border.all(
             color: isSelected
-                ? colors.primary
-                : Colors.white.withValues(alpha: 0.06),
-            width: 1.2,
+                ? colors.primary.withValues(alpha: 0.5)
+                : Colors.transparent,
+            width: 1.5,
           ),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           children: [
-            Icon(
-              isAudio
-                  ? Icons.headphones
-                  : isMerge
-                      ? Icons.merge_type
-                      : Icons.videocam,
-              color: isSelected ? colors.primary : Colors.grey,
-              size: 18,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isSelected ? colors.primary.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                isAudio
+                    ? Icons.headphones_rounded
+                    : isMerge
+                        ? Icons.merge_type_rounded
+                        : Icons.videocam_rounded,
+                color: isSelected ? colors.primary : Colors.grey,
+                size: 20,
+              ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Text(
                 option.label,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.white60,
-                  fontSize: 12.5,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected ? Colors.white : Colors.white70,
+                  fontSize: 14,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 ),
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: colors.primary, size: 18),
+              Icon(Icons.check_circle_rounded, color: colors.primary, size: 22),
           ],
         ),
       ),
