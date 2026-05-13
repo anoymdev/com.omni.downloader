@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFF0F0F0F),
+        scaffoldBackgroundColor: const Color(0xFF09090B),
       ),
       home: const DownloaderScreen(),
     );

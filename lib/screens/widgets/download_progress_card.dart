@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/formatters.dart';
 
-/// Shows download progress bar, speed, and bytes downloaded/total.
 class DownloadProgressCard extends StatelessWidget {
   final String phase;
   final double progress;
@@ -23,82 +22,91 @@ class DownloadProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(14),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
+        color: const Color(0xFF18181B),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Phase label + percentage.
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isStalled ? Colors.amber.withValues(alpha: 0.1) : colors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  isStalled ? Icons.hourglass_empty_rounded : Icons.cloud_download_outlined,
+                  color: isStalled ? Colors.amber : colors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 16),
               Expanded(
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (isStalled)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 6),
-                        child: Icon(Icons.hourglass_top,
-                            color: Colors.amber, size: 14),
+                    Text(
+                      phase,
+                      style: TextStyle(
+                        color: isStalled ? Colors.amber : Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
                       ),
-                    Expanded(
-                      child: Text(
-                        phase,
-                        style: TextStyle(
-                          color: isStalled ? Colors.amber : Colors.white70,
-                          fontSize: 13,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    if (totalBytes > 0) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        '${formatBytes(downloadedBytes)} / ${formatBytes(totalBytes)} • ${formatSpeed(speed)}',
+                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                      ),
+                    ],
                   ],
                 ),
               ),
               if (progress > 0 && progress < 1)
-                Text(
-                  '${(progress * 100).toStringAsFixed(1)}%',
-                  style: TextStyle(
-                    color: colors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    '${(progress * 100).toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      color: colors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 10),
-          // Progress bar.
+          const SizedBox(height: 16),
           ClipRRect(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
               value: totalBytes > 0 ? progress : null,
-              minHeight: 7,
-              backgroundColor: Colors.white10,
+              minHeight: 8,
+              backgroundColor: Colors.white.withValues(alpha: 0.05),
               valueColor: AlwaysStoppedAnimation<Color>(
                   isStalled ? Colors.amber : colors.primary),
             ),
           ),
-          // Downloaded / total and speed.
-          if (totalBytes > 0) ...[
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${formatBytes(downloadedBytes)} / ${formatBytes(totalBytes)}',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                Text(
-                  formatSpeed(speed),
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-              ],
-            ),
-          ],
         ],
       ),
     );

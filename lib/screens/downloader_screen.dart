@@ -1157,42 +1157,54 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
                 // Video info.
                 if (_videoInfo != null) ...[
-                  const SizedBox(height: 12),
-                  VideoInfoCard(video: _videoInfo!),
+                  const SizedBox(height: 20),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    child: VideoInfoCard(video: _videoInfo!),
+                  ),
                 ],
 
                 // Stream selection + download button.
                 if (_streamOptions.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  SaveLocationCard(
-                    directoryPath: _saveDirectory,
-                    enabled: !_isDownloading,
-                    onPickDirectory: _pickSaveDirectory,
+                  const SizedBox(height: 24),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    child: SaveLocationCard(
+                      directoryPath: _saveDirectory,
+                      enabled: !_isDownloading,
+                      onPickDirectory: _pickSaveDirectory,
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  StreamList(
-                    options: _streamOptions,
-                    selected: _selectedStream,
-                    isDownloading: _isDownloading,
-                    onSelect: (opt) => setState(() => _selectedStream = opt),
-                    onDownload:
-                        (_isDownloading || _selectedStream == null)
-                            ? null
-                            : _startDownload,
-                    onCancel: _cancelDownload,
+                  const SizedBox(height: 20),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    child: StreamList(
+                      options: _streamOptions,
+                      selected: _selectedStream,
+                      isDownloading: _isDownloading,
+                      onSelect: (opt) => setState(() => _selectedStream = opt),
+                      onDownload:
+                          (_isDownloading || _selectedStream == null)
+                              ? null
+                              : _startDownload,
+                      onCancel: _cancelDownload,
+                    ),
                   ),
                 ],
 
                 // Download progress.
                 if (_isDownloading) ...[
-                  const SizedBox(height: 16),
-                  DownloadProgressCard(
-                    phase: _currentPhase,
-                    progress: _progress,
-                    downloadedBytes: _downloadedBytes,
-                    totalBytes: _totalBytes,
-                    speed: _downloadSpeed,
-                    isStalled: _isStalled,
+                  const SizedBox(height: 24),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 300),
+                    child: DownloadProgressCard(
+                      phase: _currentPhase,
+                      progress: _progress,
+                      downloadedBytes: _downloadedBytes,
+                      totalBytes: _totalBytes,
+                      speed: _downloadSpeed,
+                      isStalled: _isStalled,
+                    ),
                   ),
                 ],
 
