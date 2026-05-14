@@ -11,7 +11,7 @@ class AnalyticsService {
       await _analytics.logEvent(
         name: 'download_started',
         parameters: {
-          'video_url': videoUrl,
+          'source_domain': _domainFromUrl(videoUrl),
           'format': format,
         },
       );
@@ -44,5 +44,17 @@ class AnalyticsService {
         },
       );
     } catch (_) {}
+  }
+
+  static String _domainFromUrl(String url) {
+    final trimmed = url.trim();
+    final parsed = Uri.tryParse(trimmed);
+    final withScheme = Uri.tryParse('https://$trimmed');
+    final host =
+        (parsed?.host.isNotEmpty == true ? parsed!.host : withScheme?.host)
+            ?.toLowerCase();
+
+    if (host == null || host.isEmpty) return 'unknown';
+    return host.startsWith('www.') ? host.substring(4) : host;
   }
 }
