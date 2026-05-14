@@ -523,6 +523,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device.'**
   String get analyticsCrashToggleDesc;
+
+  /// No description provided for @githubRepoButton.
+  ///
+  /// In en, this message translates to:
+  /// **'GitHub Repository / Report Issue'**
+  String get githubRepoButton;
 }
 
 class _AppLocalizationsDelegate

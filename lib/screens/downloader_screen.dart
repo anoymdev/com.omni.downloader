@@ -46,6 +46,7 @@ class DownloaderScreen extends StatefulWidget {
 
 class _DownloaderScreenState extends State<DownloaderScreen> {
   static const String _donateUrl = 'https://saweria.co/anoymdev';
+  static const String _githubRepoUrl = 'https://github.com/anoymdev/com.omni.downloader';
   static const String _defaultSaveDir = '/storage/emulated/0/Download/OmniDownloader';
   static const String _prefKeySaveDir = 'save_directory';
   static const String _prefKeyAnalyticsCrashReporting = 'analytics_crash_reporting_enabled';
@@ -503,7 +504,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             _progress = 0.0;
           });
           _updateNotification(
-              AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.downloadingAudio);
+            AppLocalizations.of(context)!.appTitle,
+            AppLocalizations.of(context)!.downloadingAudio,
+          );
 
           audioFile = await YtDlpService.downloadStream(
             videoUrl: videoUrl,
@@ -519,8 +522,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             _totalBytes = 0;
             _downloadSpeed = 0.0;
           });
-          _updateNotification(
-              AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.mergingVideoAudio);
+          _updateNotification(AppLocalizations.of(context)!.appTitle, AppLocalizations.of(context)!.mergingVideoAudio);
 
           final session = await FFmpegKit.executeWithArguments([
             '-y',
@@ -966,6 +968,23 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () => _openLink(_githubRepoUrl),
+                  icon: const Icon(Icons.code_rounded, size: 16),
+                  label: Text(
+                    AppLocalizations.of(context)!.githubRepoButton,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF24292F),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context)!.donateTitle,
@@ -973,8 +992,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
                   color: const Color(0xFF262626),
                   borderRadius: BorderRadius.circular(8),

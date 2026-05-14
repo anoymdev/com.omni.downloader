@@ -70,5 +70,6 @@
   "privacyPolicyTitle": "Kebijakan Privasi",
   "privacyPolicyBody": "Omni Downloader memproses tautan video di perangkat Anda untuk mengambil metadata dan mengunduh media yang dipilih. Analitik dasar dan laporan crash aktif secara default untuk meningkatkan keandalan, dan Anda dapat menonaktifkannya di bawah. Remote Config dapat menyediakan pengaturan pembaruan/versi, tetapi tidak digunakan untuk menambahkan perilaku tersembunyi atau kode yang dapat dieksekusi. File unduhan dan konten media tetap berada di perangkat Anda kecuali Anda memilih membagikannya di luar aplikasi ini.",
   "analyticsCrashToggleTitle": "Analitik dan laporan crash",
-  "analyticsCrashToggleDesc": "Aktif secara default. Matikan ini untuk menghentikan pengumpulan Firebase Analytics dan Crashlytics di perangkat ini."
+  "analyticsCrashToggleDesc": "Aktif secara default. Matikan ini untuk menghentikan pengumpulan Firebase Analytics dan Crashlytics di perangkat ini.",
+  "githubRepoButton": "Repositori GitHub / Laporkan Masalah"
 }

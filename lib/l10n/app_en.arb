@@ -70,5 +70,6 @@
   "privacyPolicyTitle": "Privacy Policy",
   "privacyPolicyBody": "Omni Downloader processes video links on your device to fetch metadata and download selected media. Basic analytics and crash reporting are enabled by default to improve reliability, and you can turn them off below. Remote Config may provide update/version settings, but it is not used to add hidden behavior or executable code. Downloaded files and media content stay on your device unless you choose to share them outside this app.",
   "analyticsCrashToggleTitle": "Analytics and crash reporting",
-  "analyticsCrashToggleDesc": "Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device."
+  "analyticsCrashToggleDesc": "Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device.",
+  "githubRepoButton": "GitHub Repository / Report Issue"
 }

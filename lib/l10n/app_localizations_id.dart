@@ -245,4 +245,7 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get analyticsCrashToggleDesc =>
       'Aktif secara default. Matikan ini untuk menghentikan pengumpulan Firebase Analytics dan Crashlytics di perangkat ini.';
+
+  @override
+  String get githubRepoButton => 'Repositori GitHub / Laporkan Masalah';
 }

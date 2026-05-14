@@ -244,4 +244,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get analyticsCrashToggleDesc =>
       'Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device.';
+
+  @override
+  String get githubRepoButton => 'GitHub Repository / Report Issue';
 }
