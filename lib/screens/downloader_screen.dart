@@ -357,14 +357,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
               ElevatedButton(
                 onPressed: () async {
                   final url = ConfigData.getValue('updateUrl');
-                  if (url.isNotEmpty) {
-                    await launchUrl(Uri.parse(url),
-                        mode: LaunchMode.externalApplication);
-                  } else {
-                    // Fallback to the github release link if url is empty
-                    await launchUrl(Uri.parse('https://github.com/anoymdev/com.anoym.ytdownloader/releases/latest'), 
-                        mode: LaunchMode.externalApplication);
-                  }
+                  await _openLink(url);
                   if (!ctx.mounted) return;
                   if (isForceUpdate) {
                     SystemNavigator.pop();
