@@ -1,7 +1,7 @@
 name: omni_downloader
-description: "A new Flutter project."
+description: "An Android media downloader app built with Flutter, yt-dlp, and FFmpeg."
 publish_to: 'none'
-version: 0.2.0+2
+version: 0.3.0+3
 
 environment:
   sdk: ^3.10.4
