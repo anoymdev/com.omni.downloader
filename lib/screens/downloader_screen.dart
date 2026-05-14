@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -34,7 +36,6 @@ import 'widgets/video_info_card.dart';
 /// of [StatusMessageCard] so an error after a finished download phase
 /// (e.g. FFmpeg failure) does not render as a green success.
 
-
 /// Main screen of the app — URL input, stream selection, download progress.
 class DownloaderScreen extends StatefulWidget {
   const DownloaderScreen({super.key});
@@ -47,6 +48,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
   static const String _donateUrl = 'https://saweria.co/anoymdev';
   static const String _defaultSaveDir = '/storage/emulated/0/Download/OmniDownloader';
   static const String _prefKeySaveDir = 'save_directory';
+  static const String _prefKeyAnalyticsCrashReporting = 'analytics_crash_reporting_enabled';
 
   final _urlController = TextEditingController();
   // Video & stream state.
@@ -67,7 +69,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
   String _currentPhase = '';
   bool _isStalled = false;
-
+  bool _analyticsCrashReportingEnabled = true;
 
   DateTime? _downloadStartTime;
   String _downloadFormat = '';
@@ -80,6 +82,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     super.initState();
     _initForegroundTask();
     _loadSaveDirectory();
+    _loadAnalyticsPreference();
     FlutterForegroundTask.addTaskDataCallback(_onTaskData);
     // Subscribe to native yt-dlp progress events.
     _progressSub = YtDlpService.progressStream.listen(_onYtDlpProgress);
@@ -391,7 +394,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       _streamOptions = [];
       _selectedStream = null;
       _progress = 0.0;
-
     });
 
     try {
@@ -409,7 +411,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       if (!mounted) return;
       setState(() {
         _isFetching = false;
-
       });
       _showStatusDialog(
         isSuccess: false,
@@ -439,7 +440,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       _downloadSpeed = 0.0;
       _currentPhase = AppLocalizations.of(context)!.preparing;
       _isStalled = false;
-
     });
 
     // Start the foreground service as a simple "keep-alive" so the OS
@@ -475,15 +475,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         // Download video-only + audio-only in sequence via yt-dlp, then
         // merge with FFmpeg.
         final ts = DateTime.now().millisecondsSinceEpoch;
-        final tempVideoTemplate =
-            '${saveDir.path}/tmp_v_$ts.%(ext)s';
-        final tempAudioTemplate =
-            '${saveDir.path}/tmp_a_$ts.%(ext)s';
-        final finalPath = _uniquePath(
-          saveDir.path,
-          '$cleanTitle-${opt.tag}',
-          ext,
-        );
+        final tempVideoTemplate = '${saveDir.path}/tmp_v_$ts.%(ext)s';
+        final tempAudioTemplate = '${saveDir.path}/tmp_a_$ts.%(ext)s';
+        final finalPath = _uniquePath(saveDir.path, '$cleanTitle-${opt.tag}', ext);
 
         String? videoFile;
         String? audioFile;
@@ -547,8 +541,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         _onDownloadSuccess(finalPath, cleanTitle);
       } else {
         // Muxed or audio-only: one shot.
-        final outputTemplate =
-            '${saveDir.path}/$cleanTitle-${opt.tag}.%(ext)s';
+        final outputTemplate = '${saveDir.path}/$cleanTitle-${opt.tag}.%(ext)s';
 
         if (!mounted) return;
         setState(() => _currentPhase = AppLocalizations.of(context)!.downloading);
@@ -569,7 +562,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         _isDownloading = false;
         _currentPhase = '';
         _isStalled = false;
-
       });
       _updateNotification(AppLocalizations.of(context)!.downloadCancelled, '');
       _scheduleServiceStop();
@@ -580,7 +572,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
         _isDownloading = false;
         _currentPhase = '';
         _isStalled = false;
-
       });
       _updateNotification(AppLocalizations.of(context)!.downloadFailed, _friendlyError(e.toString()));
       _scheduleServiceStop();
@@ -625,7 +616,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       _progress = 1.0;
       _currentPhase = '';
       _isStalled = false;
-
     });
     _showStatusDialog(
       isSuccess: true,
@@ -668,6 +658,22 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
   Future<void> _persistSaveDirectory(String path) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefKeySaveDir, path);
+  }
+
+  Future<void> _loadAnalyticsPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    final enabled = prefs.getBool(_prefKeyAnalyticsCrashReporting) ?? true;
+    if (mounted) {
+      setState(() => _analyticsCrashReportingEnabled = enabled);
+    }
+  }
+
+  Future<void> _setAnalyticsCrashReportingEnabled(bool enabled) async {
+    setState(() => _analyticsCrashReportingEnabled = enabled);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_prefKeyAnalyticsCrashReporting, enabled);
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(enabled);
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(enabled);
   }
 
   Future<void> _pickSaveDirectory() async {
@@ -765,23 +771,17 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
 
   void _showSnackBar(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   // -------------------------------------------------------------------------
   // Status dialog (replaces the old bottom card)
   // -------------------------------------------------------------------------
 
-  void _showStatusDialog({
-    required bool isSuccess,
-    required String message,
-  }) {
+  void _showStatusDialog({required bool isSuccess, required String message}) {
     if (!mounted) return;
     final color = isSuccess ? const Color(0xFF4CAF50) : const Color(0xFFFF5252);
-    final icon = isSuccess
-        ? Icons.check_circle_rounded
-        : Icons.error_rounded;
+    final icon = isSuccess ? Icons.check_circle_rounded : Icons.error_rounded;
 
     showDialog<void>(
       context: context,
@@ -1021,6 +1021,141 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
     );
   }
 
+  Future<void> _showPrivacyDialog() async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, localSetState) {
+            final l10n = AppLocalizations.of(context)!;
+            return AlertDialog(
+              backgroundColor: const Color(0xFF1A1A1A),
+              insetPadding: EdgeInsets.all(20),
+              contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              title: Row(
+                children: [
+                  const Icon(
+                    Icons.privacy_tip_outlined,
+                    color: Color(0xFF00BCD4),
+                    size: 22,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      l10n.privacyTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 17,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.privacyIntro,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _privacyText(l10n.privacyAnalytics),
+                    _privacyText(l10n.privacyCrashlytics),
+                    _privacyText(l10n.privacyRemoteConfig),
+                    _privacyText(l10n.privacyRemoteConfigLimits),
+                    _privacyText(l10n.privacyNoContent),
+                    _privacyText(l10n.privacyNoUpload),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.privacyPolicyTitle,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.privacyPolicyBody,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: Text(
+                        l10n.analyticsCrashToggleTitle,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                      subtitle: Text(
+                        l10n.analyticsCrashToggleDesc,
+                        style: const TextStyle(
+                          color: Colors.white60,
+                          fontSize: 12,
+                        ),
+                      ),
+                      value: _analyticsCrashReportingEnabled,
+                      onChanged: (value) {
+                        localSetState(
+                          () => _analyticsCrashReportingEnabled = value,
+                        );
+                        _setAnalyticsCrashReportingEnabled(value);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: Text(l10n.ok),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _privacyText(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('• ', style: TextStyle(color: Color(0xFF00BCD4))),
+          Expanded(
+            child: Text(
+              text,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 13,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showLanguageDialog() {
     showDialog(
       context: context,
@@ -1087,11 +1222,16 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
             actions: [
               IconButton(
                 tooltip: AppLocalizations.of(context)!.language,
+                icon: const Icon(Icons.language_rounded, color: Colors.white),
+                onPressed: _showLanguageDialog,
+              ),
+              IconButton(
+                tooltip: AppLocalizations.of(context)!.privacyTitle,
                 icon: const Icon(
-                  Icons.language_rounded,
+                  Icons.privacy_tip_outlined,
                   color: Colors.white,
                 ),
-                onPressed: _showLanguageDialog,
+                onPressed: _showPrivacyDialog,
               ),
               IconButton(
                 tooltip: 'Developer Info',
@@ -1103,14 +1243,20 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
               ),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              titlePadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(6),
-                    child: Image.asset('assets/images/app_icon.png', width: 24, height: 24),
+                    child: Image.asset(
+                      'assets/images/app_icon.png',
+                      width: 24,
+                      height: 24,
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -1145,8 +1291,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                   controller: _urlController,
                   enabled: !_isFetching && !_isDownloading,
                   isLoading: _isFetching,
-                  onSearch:
-                      (_isFetching || _isDownloading) ? null : _fetchStreams,
+                  onSearch: (_isFetching || _isDownloading) ? null : _fetchStreams,
                 ),
 
                 // Video info.
@@ -1177,10 +1322,9 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                       selected: _selectedStream,
                       isDownloading: _isDownloading,
                       onSelect: (opt) => setState(() => _selectedStream = opt),
-                      onDownload:
-                          (_isDownloading || _selectedStream == null)
-                              ? null
-                              : _startDownload,
+                      onDownload: (_isDownloading || _selectedStream == null)
+                          ? null
+                          : _startDownload,
                       onCancel: _cancelDownload,
                     ),
                   ),
@@ -1201,8 +1345,6 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
                     ),
                   ),
                 ],
-
-
               ]),
             ),
           ),

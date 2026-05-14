@@ -199,4 +199,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get disclaimerAccept => 'I Understand & Agree';
+
+  @override
+  String get privacyTitle => 'Privacy & Transparency';
+
+  @override
+  String get privacyIntro =>
+      'This page explains what app services are used and what is not collected.';
+
+  @override
+  String get privacyAnalytics =>
+      'Firebase Analytics is used for basic usage analytics, such as feature use and app health signals.';
+
+  @override
+  String get privacyCrashlytics =>
+      'Firebase Crashlytics is used for crash reports so we can diagnose stability problems.';
+
+  @override
+  String get privacyRemoteConfig =>
+      'Firebase Remote Config is used for update checks and app configuration.';
+
+  @override
+  String get privacyRemoteConfigLimits =>
+      'Remote Config is not used to bypass user consent, hide behavior, or download executable code.';
+
+  @override
+  String get privacyNoContent =>
+      'The app does not collect downloaded files, media content, or raw video URLs.';
+
+  @override
+  String get privacyNoUpload =>
+      'The app does not upload user-downloaded media to our server.';
+
+  @override
+  String get privacyPolicyTitle => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyBody =>
+      'Omni Downloader processes video links on your device to fetch metadata and download selected media. Basic analytics and crash reporting are enabled by default to improve reliability, and you can turn them off below. Remote Config may provide update/version settings, but it is not used to add hidden behavior or executable code. Downloaded files and media content stay on your device unless you choose to share them outside this app.';
+
+  @override
+  String get analyticsCrashToggleTitle => 'Analytics and crash reporting';
+
+  @override
+  String get analyticsCrashToggleDesc =>
+      'Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device.';
 }

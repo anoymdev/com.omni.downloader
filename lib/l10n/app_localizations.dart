@@ -451,6 +451,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'I Understand & Agree'**
   String get disclaimerAccept;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Transparency'**
+  String get privacyTitle;
+
+  /// No description provided for @privacyIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'This page explains what app services are used and what is not collected.'**
+  String get privacyIntro;
+
+  /// No description provided for @privacyAnalytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase Analytics is used for basic usage analytics, such as feature use and app health signals.'**
+  String get privacyAnalytics;
+
+  /// No description provided for @privacyCrashlytics.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase Crashlytics is used for crash reports so we can diagnose stability problems.'**
+  String get privacyCrashlytics;
+
+  /// No description provided for @privacyRemoteConfig.
+  ///
+  /// In en, this message translates to:
+  /// **'Firebase Remote Config is used for update checks and app configuration.'**
+  String get privacyRemoteConfig;
+
+  /// No description provided for @privacyRemoteConfigLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Config is not used to bypass user consent, hide behavior, or download executable code.'**
+  String get privacyRemoteConfigLimits;
+
+  /// No description provided for @privacyNoContent.
+  ///
+  /// In en, this message translates to:
+  /// **'The app does not collect downloaded files, media content, or raw video URLs.'**
+  String get privacyNoContent;
+
+  /// No description provided for @privacyNoUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'The app does not upload user-downloaded media to our server.'**
+  String get privacyNoUpload;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacyPolicyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Omni Downloader processes video links on your device to fetch metadata and download selected media. Basic analytics and crash reporting are enabled by default to improve reliability, and you can turn them off below. Remote Config may provide update/version settings, but it is not used to add hidden behavior or executable code. Downloaded files and media content stay on your device unless you choose to share them outside this app.'**
+  String get privacyPolicyBody;
+
+  /// No description provided for @analyticsCrashToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics and crash reporting'**
+  String get analyticsCrashToggleTitle;
+
+  /// No description provided for @analyticsCrashToggleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device.'**
+  String get analyticsCrashToggleDesc;
 }
 
 class _AppLocalizationsDelegate

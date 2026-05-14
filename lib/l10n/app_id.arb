@@ -58,5 +58,17 @@
   "disclaimerPoint4": "Penggunaan pribadi & offline",
   "disclaimerWarning": "Dilarang keras menggunakan app ini untuk mendistribusikan ulang, mengkomersilkan, atau mengunduh konten yang bukan milikmu tanpa izin pemilik hak cipta.",
   "disclaimerResponsibility": "Pengguna bertanggung jawab penuh atas penggunaan app ini.",
-  "disclaimerAccept": "Saya Mengerti & Setuju"
+  "disclaimerAccept": "Saya Mengerti & Setuju",
+  "privacyTitle": "Privasi & Transparansi",
+  "privacyIntro": "Halaman ini menjelaskan layanan yang digunakan aplikasi dan data yang tidak dikumpulkan.",
+  "privacyAnalytics": "Firebase Analytics digunakan untuk analitik penggunaan dasar, seperti penggunaan fitur dan sinyal kesehatan aplikasi.",
+  "privacyCrashlytics": "Firebase Crashlytics digunakan untuk laporan crash agar kami dapat mendiagnosis masalah stabilitas.",
+  "privacyRemoteConfig": "Firebase Remote Config digunakan untuk pengecekan pembaruan dan konfigurasi aplikasi.",
+  "privacyRemoteConfigLimits": "Remote Config tidak digunakan untuk melewati persetujuan pengguna, menyembunyikan perilaku, atau mengunduh kode yang dapat dieksekusi.",
+  "privacyNoContent": "Aplikasi tidak mengumpulkan file yang diunduh, konten media, atau URL video mentah.",
+  "privacyNoUpload": "Aplikasi tidak mengunggah media yang diunduh pengguna ke server kami.",
+  "privacyPolicyTitle": "Kebijakan Privasi",
+  "privacyPolicyBody": "Omni Downloader memproses tautan video di perangkat Anda untuk mengambil metadata dan mengunduh media yang dipilih. Analitik dasar dan laporan crash aktif secara default untuk meningkatkan keandalan, dan Anda dapat menonaktifkannya di bawah. Remote Config dapat menyediakan pengaturan pembaruan/versi, tetapi tidak digunakan untuk menambahkan perilaku tersembunyi atau kode yang dapat dieksekusi. File unduhan dan konten media tetap berada di perangkat Anda kecuali Anda memilih membagikannya di luar aplikasi ini.",
+  "analyticsCrashToggleTitle": "Analitik dan laporan crash",
+  "analyticsCrashToggleDesc": "Aktif secara default. Matikan ini untuk menghentikan pengumpulan Firebase Analytics dan Crashlytics di perangkat ini."
 }

@@ -58,5 +58,17 @@
   "disclaimerPoint4": "Personal & offline use",
   "disclaimerWarning": "It is strictly prohibited to use this app to redistribute, commercialize, or download content you do not own without the copyright owner's permission.",
   "disclaimerResponsibility": "The user takes full responsibility for the use of this app.",
-  "disclaimerAccept": "I Understand & Agree"
+  "disclaimerAccept": "I Understand & Agree",
+  "privacyTitle": "Privacy & Transparency",
+  "privacyIntro": "This page explains what app services are used and what is not collected.",
+  "privacyAnalytics": "Firebase Analytics is used for basic usage analytics, such as feature use and app health signals.",
+  "privacyCrashlytics": "Firebase Crashlytics is used for crash reports so we can diagnose stability problems.",
+  "privacyRemoteConfig": "Firebase Remote Config is used for update checks and app configuration.",
+  "privacyRemoteConfigLimits": "Remote Config is not used to bypass user consent, hide behavior, or download executable code.",
+  "privacyNoContent": "The app does not collect downloaded files, media content, or raw video URLs.",
+  "privacyNoUpload": "The app does not upload user-downloaded media to our server.",
+  "privacyPolicyTitle": "Privacy Policy",
+  "privacyPolicyBody": "Omni Downloader processes video links on your device to fetch metadata and download selected media. Basic analytics and crash reporting are enabled by default to improve reliability, and you can turn them off below. Remote Config may provide update/version settings, but it is not used to add hidden behavior or executable code. Downloaded files and media content stay on your device unless you choose to share them outside this app.",
+  "analyticsCrashToggleTitle": "Analytics and crash reporting",
+  "analyticsCrashToggleDesc": "Enabled by default. Turn this off to stop Firebase Analytics and Crashlytics collection on this device."
 }
