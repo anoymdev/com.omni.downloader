@@ -66,6 +66,7 @@ Unlike platform-specific solutions, Omni Downloader uses a unified backend (yt-d
 - 📱 **Material Design 3**: Modern, intuitive dark-themed UI
 - 🛡️ **Robust Error Handling**: Firebase Crashlytics for automatic error tracking
 - 📈 **Usage Analytics**: Firebase Analytics integration
+- 🔎 **Privacy & Transparency**: In-app privacy page explaining Firebase services and user controls
 
 ---
 
@@ -96,9 +97,10 @@ Unlike platform-specific solutions, Omni Downloader uses a unified backend (yt-d
 - 🔐 **Permission Management** - Handles storage and notification permissions
 - 🔄 **Foreground Service** - Background downloads with persistent notification
 - 💾 **Preference Storage** - Saves user settings and download history
-- 📡 **Remote Configuration** - Dynamic feature control via Firebase Remote Config
+- 📡 **Remote Configuration** - Safe app configuration and update checks via Firebase Remote Config
 - 🐛 **Crash Reporting** - Automatic error tracking and diagnostics
-- 📊 **Usage Analytics** - Anonymous analytics for app improvement
+- 📊 **Usage Analytics** - Basic analytics for app improvement
+- 🔎 **Privacy Controls** - Privacy & Transparency page with analytics and crash reporting preference
 - 🐍 **Python Bridge** - Chaquopy-powered yt-dlp integration for reliability
 
 ---
@@ -227,6 +229,15 @@ flutter run -d <device-id>
    - Enable Remote Config in Firebase Console
    - Set up Remote Config parameters (optional)
 
+### Privacy & Transparency
+
+- Firebase Analytics is used for basic usage analytics. Raw video URLs are not sent to analytics; safer metadata such as source domain or format information is used instead.
+- Firebase Crashlytics is used for crash reports and diagnostics.
+- Firebase Remote Config is used only for safe app configuration and update/version checks.
+- Remote Config is not used to bypass user consent, hide behavior, or download executable code.
+- Downloaded files, media content, and raw video URLs are not collected or uploaded to our server.
+- Users can open the in-app Privacy & Transparency page and disable analytics/crash reporting collection on their device.
+
 ### Android Configuration
 
 **android/app/build.gradle.kts:**
@@ -248,6 +259,7 @@ flutter run -d <device-id>
 The app stores preferences in shared_preferences:
 - **Save Directory**: User's custom download folder
 - **User Preferences**: Stored locally and persisted
+- **Analytics & Crash Reporting Preference**: User opt-in/out preference for Firebase collection
 
 ---
 
@@ -538,6 +550,10 @@ flutter install --debug
 
 ### Release Build
 
+Releases are distributed through GitHub Releases as signed APKs.
+Release APKs must be signed with the private release keystore. Do not commit keystore files, signing property files, passwords, or secret values.
+For CI, configure repository secrets for the keystore, keystore password, key alias, and key password so the workflow can sign the APK securely.
+
 ```bash
 # Create release APK
 flutter build apk --release
@@ -781,7 +797,8 @@ Use GitHub Issues with:
 
 ### Quick Links
 
-- **Report Bug**: [GitHub Issues](https://github.com/anoymdev/com.omni.downloader/issues)
+- **GitHub Repository**: [View Source](https://github.com/anoymdev/com.omni.downloader)
+- **Report Issue**: [GitHub Issues](https://github.com/anoymdev/com.omni.downloader/issues)
 - **Request Feature**: [GitHub Discussions](https://github.com/anoymdev/com.omni.downloader/discussions)
 - **View Changes**: [GitHub Commits](https://github.com/anoymdev/com.omni.downloader/commits)
 

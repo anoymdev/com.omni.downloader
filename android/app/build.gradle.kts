@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -9,6 +11,30 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+
+fun signingValue(name: String, localName: String): String? =
+    providers.gradleProperty(name).orElse(providers.environmentVariable(name)).orNull
+        ?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty(name)?.takeIf { it.isNotBlank() }
+        ?: keystoreProperties.getProperty(localName)?.takeIf { it.isNotBlank() }
+
+val releaseKeystorePath = signingValue("ANDROID_KEYSTORE_PATH", "storeFile")
+val releaseKeystorePassword = signingValue("ANDROID_KEYSTORE_PASSWORD", "storePassword")
+val releaseKeyAlias = signingValue("ANDROID_KEY_ALIAS", "keyAlias")
+val releaseKeyPassword = signingValue("ANDROID_KEY_PASSWORD", "keyPassword")
+val releaseKeystoreFile = releaseKeystorePath?.let { rootProject.file(it) }
+val releaseSigningReady = listOf(
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { it != null } && releaseKeystoreFile?.isFile == true
 
 android {
     namespace = "com.omni.downloader"
@@ -40,11 +66,22 @@ android {
         }
     }
 
+    signingConfigs {
+        if (releaseSigningReady) {
+            create("release") {
+                storeFile = releaseKeystoreFile!!
+                storePassword = releaseKeystorePassword!!
+                keyAlias = releaseKeyAlias!!
+                keyPassword = releaseKeyPassword!!
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            if (releaseSigningReady) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -54,10 +91,31 @@ android {
     }
 }
 
+gradle.taskGraph.whenReady {
+    val releaseTaskRequested = allTasks.any {
+        it.project == project && it.name.contains("Release")
+    }
+    if (releaseTaskRequested && !releaseSigningReady) {
+        throw GradleException(
+            "Release signing is not configured. Provide android/key.properties " +
+                "(storeFile, storePassword, keyAlias, keyPassword) or Gradle " +
+                "properties/environment variables: ANDROID_KEYSTORE_PATH, " +
+                "ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD, " +
+                "and ensure the keystore file exists."
+        )
+    }
+}
+
 chaquopy {
     defaultConfig {
         version = "3.12"
-        buildPython("/usr/bin/python3.12")
+        val chaquopyPython = providers.gradleProperty("chaquopy.python")
+            .orElse(providers.environmentVariable("CHAQUOPY_PYTHON"))
+            .orNull
+            ?.takeIf { it.isNotBlank() }
+        if (chaquopyPython != null) {
+            buildPython(chaquopyPython)
+        }
         pip {
             install("yt-dlp")
         }

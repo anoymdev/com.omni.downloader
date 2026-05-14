@@ -200,4 +200,52 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get disclaimerAccept => 'Saya Mengerti & Setuju';
+
+  @override
+  String get privacyTitle => 'Privasi & Transparansi';
+
+  @override
+  String get privacyIntro =>
+      'Halaman ini menjelaskan layanan yang digunakan aplikasi dan data yang tidak dikumpulkan.';
+
+  @override
+  String get privacyAnalytics =>
+      'Firebase Analytics digunakan untuk analitik penggunaan dasar, seperti penggunaan fitur dan sinyal kesehatan aplikasi.';
+
+  @override
+  String get privacyCrashlytics =>
+      'Firebase Crashlytics digunakan untuk laporan crash agar kami dapat mendiagnosis masalah stabilitas.';
+
+  @override
+  String get privacyRemoteConfig =>
+      'Firebase Remote Config digunakan untuk pengecekan pembaruan dan konfigurasi aplikasi.';
+
+  @override
+  String get privacyRemoteConfigLimits =>
+      'Remote Config tidak digunakan untuk melewati persetujuan pengguna, menyembunyikan perilaku, atau mengunduh kode yang dapat dieksekusi.';
+
+  @override
+  String get privacyNoContent =>
+      'Aplikasi tidak mengumpulkan file yang diunduh, konten media, atau URL video mentah.';
+
+  @override
+  String get privacyNoUpload =>
+      'Aplikasi tidak mengunggah media yang diunduh pengguna ke server kami.';
+
+  @override
+  String get privacyPolicyTitle => 'Kebijakan Privasi';
+
+  @override
+  String get privacyPolicyBody =>
+      'Omni Downloader memproses tautan video di perangkat Anda untuk mengambil metadata dan mengunduh media yang dipilih. Analitik dasar dan laporan crash aktif secara default untuk meningkatkan keandalan, dan Anda dapat menonaktifkannya di bawah. Remote Config dapat menyediakan pengaturan pembaruan/versi, tetapi tidak digunakan untuk menambahkan perilaku tersembunyi atau kode yang dapat dieksekusi. File unduhan dan konten media tetap berada di perangkat Anda kecuali Anda memilih membagikannya di luar aplikasi ini.';
+
+  @override
+  String get analyticsCrashToggleTitle => 'Analitik dan laporan crash';
+
+  @override
+  String get analyticsCrashToggleDesc =>
+      'Aktif secara default. Matikan ini untuk menghentikan pengumpulan Firebase Analytics dan Crashlytics di perangkat ini.';
+
+  @override
+  String get githubRepoButton => 'Repositori GitHub / Laporkan Masalah';
 }
