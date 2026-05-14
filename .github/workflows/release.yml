@@ -36,13 +36,38 @@ jobs:
           echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > android/app/google-services.json
           echo "${{ secrets.FIREBASE_OPTIONS_BASE64 }}" | base64 --decode > lib/firebase_options.dart
 
+      - name: Restore Android signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/android-signing/release.jks
+        run: |
+          : "${ANDROID_KEYSTORE_BASE64:?ANDROID_KEYSTORE_BASE64 secret is required}"
+          mkdir -p "$(dirname "$ANDROID_KEYSTORE_PATH")"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+
       - name: Build APK Release
         env:
           GRADLE_OPTS: "-Dorg.gradle.vfs.watch=false"
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/android-signing/release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: flutter build apk --release --target-platform android-arm64,android-x64
 
       - name: Rename APK
         run: mv build/app/outputs/flutter-apk/app-release.apk OmniDownloader.apk
+
+      - name: Verify APK signature
+        run: |
+          APKSIGNER="$(command -v apksigner || true)"
+          if [ -z "$APKSIGNER" ] && [ -n "${ANDROID_HOME:-}" ]; then
+            APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)"
+          fi
+          if [ -n "$APKSIGNER" ]; then
+            "$APKSIGNER" verify --verbose --print-certs OmniDownloader.apk
+          else
+            echo "apksigner not found; skipping APK signature verification."
+          fi
 
       - name: VirusTotal Scan (Large File)
         id: vt
