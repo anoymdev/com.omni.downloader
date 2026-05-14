@@ -57,7 +57,13 @@ android {
 chaquopy {
     defaultConfig {
         version = "3.12"
-        buildPython("/usr/bin/python3.12")
+        val chaquopyPython = providers.gradleProperty("chaquopy.python")
+            .orElse(providers.environmentVariable("CHAQUOPY_PYTHON"))
+            .orNull
+            ?.takeIf { it.isNotBlank() }
+        if (chaquopyPython != null) {
+            buildPython(chaquopyPython)
+        }
         pip {
             install("yt-dlp")
         }
