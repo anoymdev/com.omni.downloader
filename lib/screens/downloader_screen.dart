@@ -688,6 +688,7 @@ class _DownloaderScreenState extends State<DownloaderScreen> {
       }
     }
 
+    if (!mounted) return;
     final selectedDir = await FilePicker.platform.getDirectoryPath(
       dialogTitle: AppLocalizations.of(context)!.chooseSaveLocation,
       initialDirectory: _saveDirectory,
